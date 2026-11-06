@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from 'react'
 import Navbar from './components/Navbar'
+import DashboardView from './components/DashboardView'
+import SalesView from './components/SalesView'
+import ProductionKanbanView from './components/ProductionKanbanView'
 import Catalog from './components/Catalog'
 import Uniform3DViewer from './components/Uniform3DViewer'
+import InventoryView from './components/InventoryView'
+import PartnersView from './components/PartnersView'
 import QuotationModal from './components/QuotationModal'
-import { Sparkles, Layers, Box, ArrowRight, CheckCircle2 } from 'lucide-react'
+import { Sparkles } from 'lucide-react'
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('catalog') // 'catalog' | 'customizer'
+  const [activeTab, setActiveTab] = useState('dashboard') // 'dashboard' | 'sales' | 'production' | 'catalog' | 'customizer' | 'inventory' | 'partners'
   const [cartItems, setCartItems] = useState([])
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [backendStatus, setBackendStatus] = useState(false)
 
-  // URL del backend (Local o variable de entorno de Vercel/Render)
+  // URL del backend (Local o Render)
   const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000'
 
   // Probar estado de conexión con FastAPI y Supabase
@@ -26,7 +31,7 @@ export default function App() {
       }
     }
     checkBackend()
-    const interval = setInterval(checkBackend, 10000)
+    const interval = setInterval(checkBackend, 15000)
     return () => clearInterval(interval)
   }, [API_URL])
 
@@ -49,8 +54,8 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50">
-      {/* Navbar Superior */}
+    <div className="min-h-screen flex flex-col bg-slate-50 font-sans text-slate-800 antialiased">
+      {/* Barra de Navegación del ERP */}
       <Navbar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
@@ -59,65 +64,56 @@ export default function App() {
         onOpenCart={() => setIsModalOpen(true)}
       />
 
-      {/* Hero Banner */}
-      <section className="bg-gradient-to-r from-maquiser-900 via-maquiser-800 to-blue-900 text-white py-12 px-4 sm:px-6 lg:px-8 border-b border-blue-950">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="max-w-2xl space-y-3">
-            <div className="inline-flex items-center space-x-2 bg-blue-500/20 border border-blue-400/30 px-3 py-1 rounded-full text-xs font-semibold text-blue-200">
-              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-              <span>Plataforma Textil Cloud ERP + Three.js 3D</span>
-            </div>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight">
-              Manufactura y Confección Textil de Alta Calidad
-            </h1>
-            <p className="text-sm sm:text-base text-blue-100/90 leading-relaxed">
-              Sistema integral para Maquiser SRL. Visualiza uniformes escolares e indumentaria de seguridad industrial en 3D interactivo y consulta el inventario en tiempo real sincronizado con Supabase.
-            </p>
-          </div>
+      {/* Contenido Principal Dinámico */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {activeTab === 'dashboard' && (
+          <DashboardView apiUrl={API_URL} setActiveTab={setActiveTab} />
+        )}
 
-          {/* Botones de acción rápida */}
-          <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-            <button
-              onClick={() => setActiveTab('customizer')}
-              className="flex items-center justify-center space-x-2 px-5 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold text-sm shadow-lg shadow-amber-500/20 active:scale-95 transition-all"
-            >
-              <Box className="w-4 h-4" />
-              <span>Abrir Personalizador 3D</span>
-              <ArrowRight className="w-4 h-4 ml-1" />
-            </button>
-            <button
-              onClick={() => setActiveTab('catalog')}
-              className="flex items-center justify-center space-x-2 px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold text-sm backdrop-blur-sm active:scale-95 transition-all"
-            >
-              <Layers className="w-4 h-4" />
-              <span>Ver Catálogo</span>
-            </button>
-          </div>
-        </div>
-      </section>
+        {activeTab === 'sales' && (
+          <SalesView apiUrl={API_URL} />
+        )}
 
-      {/* Contenido Principal */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        {activeTab === 'catalog' ? (
-          <div>
-            <div className="mb-6">
-              <h2 className="text-2xl font-black text-slate-900">Catálogo de Productos Textiles</h2>
-              <p className="text-sm text-slate-500">
+        {activeTab === 'production' && (
+          <ProductionKanbanView apiUrl={API_URL} />
+        )}
+
+        {activeTab === 'catalog' && (
+          <div className="space-y-6">
+            <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+              <span className="text-[11px] font-black uppercase tracking-wider text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+                Inventario de Confección
+              </span>
+              <h2 className="text-2xl font-black text-slate-900 mt-2">Catálogo de Prendas Terminadas</h2>
+              <p className="text-xs text-slate-500 mt-1">
                 Prendas en inventario conectadas mediante API REST a la base de datos PostgreSQL en Supabase.
               </p>
             </div>
             <Catalog apiUrl={API_URL} onAddToCart={handleAddToCart} />
           </div>
-        ) : (
-          <div>
-            <div className="mb-6">
-              <h2 className="text-2xl font-black text-slate-900">Laboratorio de Modelado 3D de Uniformes</h2>
-              <p className="text-sm text-slate-500">
-                Selecciona tejidos, colores institucionales y configuraciones técnicas con previsualización en Three.js.
+        )}
+
+        {activeTab === 'customizer' && (
+          <div className="space-y-6">
+            <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+              <span className="text-[11px] font-black uppercase tracking-wider text-purple-600 bg-purple-50 px-3 py-1 rounded-full">
+                Modelado Tridimensional en Tiempo Real
+              </span>
+              <h2 className="text-2xl font-black text-slate-900 mt-2">Personalizador 3D de Prendas (GLB / Three.js)</h2>
+              <p className="text-xs text-slate-500 mt-1">
+                Visualiza modelos 3D reales con caída orgánica de tela y cambio de colores institucionales en 360°.
               </p>
             </div>
             <Uniform3DViewer onAddCustomToCart={handleAddCustomToCart} />
           </div>
+        )}
+
+        {activeTab === 'inventory' && (
+          <InventoryView apiUrl={API_URL} />
+        )}
+
+        {activeTab === 'partners' && (
+          <PartnersView apiUrl={API_URL} />
         )}
       </main>
 
@@ -130,13 +126,13 @@ export default function App() {
         onClearCart={handleClearCart}
       />
 
-      {/* Pie de Página */}
-      <footer className="bg-white border-t border-slate-200 py-8 px-4 text-center text-xs text-slate-500 space-y-2">
-        <p className="font-semibold text-slate-700">
-          Proyecto de Grado: Sistema Cloud ERP y Catálogo 3D para Maquiser SRL
+      {/* Pie de Página del ERP */}
+      <footer className="bg-white border-t border-slate-200 py-6 px-4 text-center text-xs text-slate-400 space-y-1">
+        <p className="font-extrabold text-slate-700">
+          MAQUISER SRL • Sistema Integral Cloud ERP Textil & Modelado 3D
         </p>
-        <p className="text-slate-400">
-          Arquitectura: React 18 • Vite • Tailwind CSS • Three.js • FastAPI • PostgreSQL (Supabase) • Vercel
+        <p className="text-[11px] text-slate-400">
+          Arquitectura: React 18 • Three.js • Vite • Tailwind CSS • FastAPI • PostgreSQL (Supabase) • Render • Vercel
         </p>
       </footer>
     </div>
