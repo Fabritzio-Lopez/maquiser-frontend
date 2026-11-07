@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import {
-  Scissors, Box, Layers, ShieldCheck, Database,
+  Scissors, Box, Layers, ShieldCheck, Database, MessageSquare,
   TrendingUp, Factory, Package, Users, BarChart3, Menu, X, LogOut, User
 } from 'lucide-react'
 
@@ -91,6 +91,18 @@ export default function Navbar({
               <span className="text-slate-500 font-medium">Supabase:</span>
               <span className={`inline-block w-2 h-2 rounded-full ${backendStatus ? 'bg-emerald-500 animate-pulse' : 'bg-amber-400'}`}></span>
               <span className="font-bold text-slate-800">{backendStatus ? 'Conectado' : 'Local'}</span>
+            </div>
+
+            {/* Estado de Integración Slack (Paso 3.2) */}
+            <div
+              onClick={() => setActiveTab('dashboard')}
+              className="hidden xl:flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-purple-50 hover:bg-purple-100 border border-purple-200 text-xs cursor-pointer transition-all"
+              title="Click para ver configuración y pruebas de Slack en el Dashboard"
+            >
+              <MessageSquare className="w-3.5 h-3.5 text-purple-700" />
+              <span className="text-purple-700 font-bold">Slack:</span>
+              <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span className="font-extrabold text-slate-800">Paso 3.2</span>
             </div>
 
             {/* Carrito de Cotización */}

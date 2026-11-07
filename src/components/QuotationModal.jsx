@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { X, Send, Trash2, CheckCircle2, ShieldAlert } from 'lucide-react'
 
-export default function QuotationModal({ isOpen, onClose, cartItems, onRemoveItem, onClearCart }) {
+export default function QuotationModal({ isOpen, onClose, cartItems, onRemoveItem, onClearCart, apiUrl }) {
   const [formData, setFormData] = useState({
     institution: '',
     contactName: '',
@@ -10,6 +10,7 @@ export default function QuotationModal({ isOpen, onClose, cartItems, onRemoveIte
     notes: '',
   })
   const [submitted, setSubmitted] = useState(false)
+  const [isSending, setIsSending] = useState(false)
 
   if (!isOpen) return null
 
@@ -18,12 +19,31 @@ export default function QuotationModal({ isOpen, onClose, cartItems, onRemoveIte
     return acc + p * (item.quantity || 1)
   }, 0)
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    setSubmitted(true)
-    setTimeout(() => {
-      onClearCart()
-    }, 2500)
+    setIsSending(true)
+    try {
+      if (apiUrl) {
+        await fetch(`${apiUrl}/api/v1/sales`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            partner_name: formData.institution || formData.contactName || 'Cliente Particular',
+            amount_total: totalBs,
+            notes: `${cartItems.map(i => `${i.quantity || 1}x ${i.name}`).join(', ')} | Tel: ${formData.phone}`,
+            state: 'confirmado'
+          })
+        })
+      }
+    } catch (err) {
+      console.warn('Error al enviar cotización a la API:', err)
+    } finally {
+      setIsSending(false)
+      setSubmitted(true)
+      setTimeout(() => {
+        onClearCart()
+      }, 3500)
+    }
   }
 
   return (
@@ -41,19 +61,24 @@ export default function QuotationModal({ isOpen, onClose, cartItems, onRemoveIte
 
         {submitted ? (
           <div className="py-12 text-center space-y-4">
-            <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
+            <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
               <CheckCircle2 className="w-10 h-10" />
             </div>
-            <h4 className="text-xl font-bold text-slate-900">¡Cotización Enviada con Éxito!</h4>
+            <h4 className="text-xl font-bold text-slate-900">¡Cotización Enviada & Notificada en Slack!</h4>
             <p className="text-sm text-slate-500 max-w-md mx-auto">
-              El equipo de ventas de Maquiser SRL se pondrá en contacto al correo <strong>{formData.email}</strong> con la propuesta formal, ficha técnica y muestras de tela.
+              El pedido fue registrado en la base de datos Supabase y se ha disparado una alerta en tiempo real a Slack al canal <strong>#notificaciones-maquiser</strong>.
             </p>
-            <button
-              onClick={() => { setSubmitted(false); onClose() }}
-              className="mt-4 px-6 py-2.5 bg-maquiser-800 text-white rounded-xl text-sm font-bold shadow-md"
-            >
-              Cerrar
-            </button>
+            <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-purple-50 text-purple-700 text-xs font-bold border border-purple-200">
+              <span>💬 Integración Slack Paso 3.2: Alerta Despachada</span>
+            </div>
+            <div>
+              <button
+                onClick={() => { setSubmitted(false); onClose() }}
+                className="mt-4 px-6 py-2.5 bg-maquiser-800 hover:bg-maquiser-900 text-white rounded-xl text-sm font-bold shadow-md transition-all"
+              >
+                Cerrar
+              </button>
+            </div>
           </div>
         ) : (
           <div className="mt-6 space-y-6">

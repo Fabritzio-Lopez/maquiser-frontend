@@ -205,6 +205,7 @@ export default function App() {
         cartItems={cartItems}
         onRemoveItem={handleRemoveItem}
         onClearCart={handleClearCart}
+        apiUrl={API_URL}
       />
 
       {/* Pie de Página del ERP */}
