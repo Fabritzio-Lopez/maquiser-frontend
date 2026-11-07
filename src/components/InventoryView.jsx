@@ -4,7 +4,7 @@ import {
   Search, Plus, X, ArrowUpRight, RefreshCw, Sparkles
 } from 'lucide-react'
 
-export default function InventoryView({ apiUrl }) {
+export default function InventoryView({ apiUrl, canEdit = true }) {
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
   const [filterCat, setFilterCat] = useState('todos')
@@ -200,13 +200,19 @@ export default function InventoryView({ apiUrl }) {
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           </button>
 
-          <button
-            onClick={() => setShowCreateModal(true)}
-            className="flex-1 sm:flex-none flex items-center justify-center space-x-2 px-5 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs shadow-xl shadow-blue-500/20 active:scale-95 transition-all"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Registrar Nuevo Insumo</span>
-          </button>
+          {canEdit ? (
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className="flex-1 sm:flex-none flex items-center justify-center space-x-2 px-5 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs shadow-xl shadow-blue-500/20 active:scale-95 transition-all"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Registrar Nuevo Insumo</span>
+            </button>
+          ) : (
+            <div className="px-4 py-2.5 rounded-2xl bg-slate-100 border border-slate-200 text-slate-500 text-xs font-bold flex items-center space-x-1.5">
+              <span>Modo Consulta (Solo Lectura)</span>
+            </div>
+          )}
         </div>
       </div>
 
@@ -350,13 +356,19 @@ export default function InventoryView({ apiUrl }) {
                 </div>
 
                 {/* Botón de Cargar Más Stock */}
-                <button
-                  onClick={() => openRestock(item)}
-                  className="w-full mt-2 py-2.5 px-3 rounded-xl bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-200 hover:border-blue-200 text-xs font-bold transition-all flex items-center justify-center space-x-1.5"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>Cargar / Reabastecer Stock</span>
-                </button>
+                {canEdit ? (
+                  <button
+                    onClick={() => openRestock(item)}
+                    className="w-full mt-2 py-2.5 px-3 rounded-xl bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-200 hover:border-blue-200 text-xs font-bold transition-all flex items-center justify-center space-x-1.5"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>Cargar / Reabastecer Stock</span>
+                  </button>
+                ) : (
+                  <div className="w-full mt-2 py-2 px-3 rounded-xl bg-slate-50 text-slate-400 text-[10px] font-semibold text-center">
+                    Gestión restringida al Encargado de Almacenes
+                  </div>
+                )}
               </div>
             </div>
           )

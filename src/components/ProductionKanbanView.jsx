@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Scissors, Factory, CheckCircle2, ArrowRight, ShieldCheck, Clock, Users } from 'lucide-react'
+import { Scissors, Factory, CheckCircle2, ArrowRight, ShieldCheck, Clock, Users, Eye } from 'lucide-react'
 
 const STAGES = [
   { id: 'corte', title: '1. Corte de Tela', icon: Scissors, color: 'border-blue-500 bg-blue-50 text-blue-700' },
@@ -9,7 +9,7 @@ const STAGES = [
   { id: 'terminado', title: '5. Listo para Entrega', icon: CheckCircle2, color: 'border-emerald-500 bg-emerald-50 text-emerald-700' },
 ]
 
-export default function ProductionKanbanView({ apiUrl }) {
+export default function ProductionKanbanView({ apiUrl, canEdit = true }) {
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -29,6 +29,7 @@ export default function ProductionKanbanView({ apiUrl }) {
   }, [apiUrl])
 
   const handleAdvanceStage = (orderId, currentStage) => {
+    if (!canEdit) return
     const stageFlow = ['corte', 'confeccion', 'bordado', 'control_calidad', 'terminado']
     const nextIdx = stageFlow.indexOf(currentStage) + 1
     if (nextIdx < stageFlow.length) {
@@ -60,6 +61,12 @@ export default function ProductionKanbanView({ apiUrl }) {
         </div>
 
         <div className="flex items-center space-x-2">
+          {!canEdit && (
+            <div className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-100 border border-slate-200 text-slate-600 text-xs font-bold">
+              <Eye className="w-3.5 h-3.5 text-blue-600" />
+              <span>Modo Consulta (Solo Lectura)</span>
+            </div>
+          )}
           <span className="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-xl">
             Lotes Activos: <strong>{orders.filter(o => o.state !== 'terminado').length}</strong>
           </span>
@@ -114,13 +121,20 @@ export default function ProductionKanbanView({ apiUrl }) {
                         <p className="text-[10px] text-slate-400 block mb-2">{ord.responsible}</p>
 
                         {stage.id !== 'terminado' ? (
-                          <button
-                            onClick={() => handleAdvanceStage(ord.id, ord.state)}
-                            className="w-full flex items-center justify-center space-x-1 py-1.5 px-2 bg-slate-900 hover:bg-blue-600 text-white rounded-xl text-[11px] font-bold transition-all active:scale-95"
-                          >
-                            <span>Avanzar Etapa</span>
-                            <ArrowRight className="w-3 h-3" />
-                          </button>
+                          canEdit ? (
+                            <button
+                              onClick={() => handleAdvanceStage(ord.id, ord.state)}
+                              className="w-full flex items-center justify-center space-x-1 py-1.5 px-2 bg-slate-900 hover:bg-blue-600 text-white rounded-xl text-[11px] font-bold transition-all active:scale-95"
+                            >
+                              <span>Avanzar Etapa</span>
+                              <ArrowRight className="w-3 h-3" />
+                            </button>
+                          ) : (
+                            <div className="w-full py-1.5 px-2 rounded-xl bg-slate-100 text-slate-500 font-bold text-[10px] text-center flex items-center justify-center space-x-1">
+                              <Eye className="w-3 h-3 text-slate-400" />
+                              <span>En estación (Supervisión)</span>
+                            </div>
+                          )
                         ) : (
                           <div className="flex items-center justify-center space-x-1 py-1 text-emerald-600 font-black text-[11px]">
                             <CheckCircle2 className="w-3.5 h-3.5" />
@@ -133,6 +147,12 @@ export default function ProductionKanbanView({ apiUrl }) {
                 )}
               </div>
             </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
           )
         })}
       </div>
