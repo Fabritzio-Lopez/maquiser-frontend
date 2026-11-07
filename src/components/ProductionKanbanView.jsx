@@ -153,9 +153,3 @@ export default function ProductionKanbanView({ apiUrl, canEdit = true }) {
     </div>
   )
 }
-          )
-        })}
-      </div>
-    </div>
-  )
-}
