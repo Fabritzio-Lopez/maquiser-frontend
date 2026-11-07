@@ -9,6 +9,7 @@ import Uniform3DViewer from './components/Uniform3DViewer'
 import InventoryView from './components/InventoryView'
 import PartnersView from './components/PartnersView'
 import QuotationModal from './components/QuotationModal'
+import ComenteraWidget from './components/ComenteraWidget'
 import { Sparkles, ShieldAlert } from 'lucide-react'
 
 export default function App() {
@@ -207,6 +208,9 @@ export default function App() {
         onClearCart={handleClearCart}
         apiUrl={API_URL}
       />
+
+      {/* Widget Oficial Comentera • Feedback Visual (Paso 3.3 Guía Metodológica) */}
+      <ComenteraWidget />
 
       {/* Pie de Página del ERP */}
       <footer className="bg-white border-t border-slate-200 py-6 px-4 text-center text-xs text-slate-400 space-y-1">
