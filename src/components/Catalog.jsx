@@ -5,35 +5,51 @@ import { Plus, Search, Tag, CheckCircle2, AlertCircle, ShoppingCart, RefreshCw }
 const DEMO_PRODUCTS = [
   {
     id: 1,
-    name: 'Uniforme Escolar Completo Varón',
-    price: 150.0,
+    name: 'Chaqueta Escolar Sastre Institucional',
+    price: 180.0,
     stock: 45,
     image_url: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=600&q=80',
     category: 'Escolar'
   },
   {
     id: 2,
-    name: 'Overol Industrial Térmico Ignífugo',
-    price: 195.0,
-    stock: 28,
-    image_url: 'https://images.unsplash.com/photo-1581655353564-df123a1eb820?auto=format&fit=crop&w=600&q=80',
-    category: 'Industrial'
+    name: 'Falda Escolar a Tablas (Dama)',
+    price: 110.0,
+    stock: 50,
+    image_url: 'https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?auto=format&fit=crop&w=600&q=80',
+    category: 'Mujer'
   },
   {
     id: 3,
+    name: 'Pantalón de Vestir Sastre con Raya de Planchado',
+    price: 135.0,
+    stock: 65,
+    image_url: 'https://images.unsplash.com/photo-1473966968600-fa801b869a1a?auto=format&fit=crop&w=600&q=80',
+    category: 'Pantalones'
+  },
+  {
+    id: 4,
+    name: 'Canguro Deportivo Urbano con Capucha',
+    price: 145.0,
+    stock: 40,
+    image_url: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=600&q=80',
+    category: 'Deportivo'
+  },
+  {
+    id: 5,
     name: 'Camisa Institucional Manga Larga Oxford',
-    price: 85.0,
+    price: 65.0,
     stock: 60,
     image_url: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=600&q=80',
     category: 'Camisas'
   },
   {
-    id: 4,
-    name: 'Mandil de Laboratorio Antifluido',
-    price: 90.0,
-    stock: 35,
-    image_url: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=600&q=80',
-    category: 'Salud'
+    id: 6,
+    name: 'Overol Industrial Térmico Ignífugo',
+    price: 195.0,
+    stock: 28,
+    image_url: 'https://images.unsplash.com/photo-1581655353564-df123a1eb820?auto=format&fit=crop&w=600&q=80',
+    category: 'Industrial'
   }
 ]
 
